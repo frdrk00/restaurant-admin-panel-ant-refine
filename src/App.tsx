@@ -1,231 +1,197 @@
-import {
-  AuthBindings,
-  Authenticated,
-  GitHubBanner,
-  Refine,
-} from "@refinedev/core";
-import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import { AuthBindings, Authenticated, Refine } from '@refinedev/core'
+import { RefineKbar, RefineKbarProvider } from '@refinedev/kbar'
 
 import {
   ErrorComponent,
   notificationProvider,
   ThemedLayoutV2,
-} from "@refinedev/antd";
-import "@refinedev/antd/dist/reset.css";
+} from '@refinedev/antd'
+import '@refinedev/antd/dist/reset.css'
 
 import routerBindings, {
   CatchAllNavigate,
   DocumentTitleHandler,
   NavigateToResource,
   UnsavedChangesNotifier,
-} from "@refinedev/react-router-v6";
-import dataProvider from "@refinedev/simple-rest";
-import axios, { AxiosRequestConfig } from "axios";
-import { CredentialResponse } from "interfaces/google";
-import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "pages/blog-posts";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "pages/categories";
-import { Login } from "pages/login";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { parseJwt } from "utils/parse-jwt";
-import { Header } from "./components/header";
-import { ColorModeContextProvider } from "./contexts/color-mode";
+} from '@refinedev/react-router-v6'
+import dataProvider from '@refinedev/simple-rest'
+import axios, { AxiosRequestConfig } from 'axios'
+import { CredentialResponse } from 'interfaces/google'
+import { Login } from 'pages/login'
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom'
+import { parseJwt } from 'utils/parse-jwt'
+import { Header } from './components/header'
+import { ColorModeContextProvider } from './contexts/color-mode'
+import { FileDoneOutlined } from '@ant-design/icons'
+import { ProductList } from 'pages/products'
+import { CategoryList } from 'pages/categories'
 
-const axiosInstance = axios.create();
+const axiosInstance = axios.create()
 axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token')
   if (request.headers) {
-    request.headers["Authorization"] = `Bearer ${token}`;
+    request.headers['Authorization'] = `Bearer ${token}`
   } else {
     request.headers = {
       Authorization: `Bearer ${token}`,
-    };
+    }
   }
 
-  return request;
-});
+  return request
+})
 
 function App() {
+  const API_URL = "http://localhost:5000/api/v1";
+
   const authProvider: AuthBindings = {
     login: async ({ credential }: CredentialResponse) => {
-      const profileObj = credential ? parseJwt(credential) : null;
+      const profileObj = credential ? parseJwt(credential) : null
 
       if (profileObj) {
         localStorage.setItem(
-          "user",
+          'user',
           JSON.stringify({
             ...profileObj,
             avatar: profileObj.picture,
           })
-        );
+        )
 
-        localStorage.setItem("token", `${credential}`);
+        localStorage.setItem('token', `${credential}`)
 
         return {
           success: true,
-          redirectTo: "/",
-        };
+          redirectTo: '/',
+        }
       }
 
       return {
         success: false,
-      };
+      }
     },
     logout: async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token')
 
-      if (token && typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        axios.defaults.headers.common = {};
+      if (token && typeof window !== 'undefined') {
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        axios.defaults.headers.common = {}
         window.google?.accounts.id.revoke(token, () => {
-          return {};
-        });
+          return {}
+        })
       }
 
       return {
         success: true,
-        redirectTo: "/login",
-      };
+        redirectTo: '/login',
+      }
     },
     onError: async (error) => {
-      console.error(error);
-      return { error };
+      console.error(error)
+      return { error }
     },
     check: async () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token')
 
       if (token) {
         return {
           authenticated: true,
-        };
+        }
       }
 
       return {
         authenticated: false,
         error: {
-          message: "Check failed",
-          name: "Token not found",
+          message: 'Check failed',
+          name: 'Token not found',
         },
         logout: true,
-        redirectTo: "/login",
-      };
+        redirectTo: '/login',
+      }
     },
     getPermissions: async () => null,
     getIdentity: async () => {
-      const user = localStorage.getItem("user");
+      const user = localStorage.getItem('user')
       if (user) {
-        return JSON.parse(user);
+        return JSON.parse(user)
       }
-
-      return null;
+      return null
     },
-  };
+  }
 
   return (
     <BrowserRouter>
-      <GitHubBanner />
       <RefineKbarProvider>
         <ColorModeContextProvider>
-          <DevtoolsProvider>
-            <Refine
-              dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-              notificationProvider={notificationProvider}
-              routerProvider={routerBindings}
-              authProvider={authProvider}
-              resources={[
-                {
-                  name: "blog_posts",
-                  list: "/blog-posts",
-                  create: "/blog-posts/create",
-                  edit: "/blog-posts/edit/:id",
-                  show: "/blog-posts/show/:id",
-                  meta: {
-                    canDelete: true,
-                  },
+          <Refine
+            dataProvider={dataProvider(API_URL)}
+            notificationProvider={notificationProvider}
+            routerProvider={routerBindings}
+            authProvider={authProvider}
+            options={{
+              syncWithLocation: true,
+              warnWhenUnsavedChanges: true,
+              projectId: 'RQIlSu-B6DVG5-dn6LUk',
+            }}
+            resources={[
+              {
+                name: 'products',
+                list: '/products',
+                meta: {
+                  icon: <FileDoneOutlined />,
                 },
-                {
-                  name: "categories",
-                  list: "/categories",
-                  create: "/categories/create",
-                  edit: "/categories/edit/:id",
-                  show: "/categories/show/:id",
-                  meta: {
-                    canDelete: true,
-                  },
-                },
-              ]}
-              options={{
-                syncWithLocation: true,
-                warnWhenUnsavedChanges: true,
-                projectId: "RQIlSu-B6DVG5-dn6LUk",
-              }}
-            >
-              <Routes>
-                <Route
-                  element={
-                    <Authenticated
-                      key="authenticated-inner"
-                      fallback={<CatchAllNavigate to="/login" />}
+              },
+              {
+                name: 'categories',
+                list: '/categories',
+              },
+            ]}
+          >
+            <Routes>
+              <Route
+                element={
+                  <Authenticated
+                    key="authenticated-inner"
+                    fallback={<CatchAllNavigate to="/login" />}
+                  >
+                    <ThemedLayoutV2
+                      Header={() => <Header isSticky={true} />}
+                      Title={() => <h3>Restaurant Dashboard</h3>}
                     >
-                      <ThemedLayoutV2 Header={() => <Header isSticky={true} />}>
-                        <Outlet />
-                      </ThemedLayoutV2>
-                    </Authenticated>
-                  }
-                >
-                  <Route
-                    index
-                    element={<NavigateToResource resource="blog_posts" />}
-                  />
-                  <Route path="/blog-posts">
-                    <Route index element={<BlogPostList />} />
-                    <Route path="create" element={<BlogPostCreate />} />
-                    <Route path="edit/:id" element={<BlogPostEdit />} />
-                    <Route path="show/:id" element={<BlogPostShow />} />
-                  </Route>
-                  <Route path="/categories">
-                    <Route index element={<CategoryList />} />
-                    <Route path="create" element={<CategoryCreate />} />
-                    <Route path="edit/:id" element={<CategoryEdit />} />
-                    <Route path="show/:id" element={<CategoryShow />} />
-                  </Route>
-                  <Route path="*" element={<ErrorComponent />} />
-                </Route>
+                      <Outlet />
+                    </ThemedLayoutV2>
+                  </Authenticated>
+                }
+              >
                 <Route
-                  element={
-                    <Authenticated
-                      key="authenticated-outer"
-                      fallback={<Outlet />}
-                    >
-                      <NavigateToResource />
-                    </Authenticated>
-                  }
-                >
-                  <Route path="/login" element={<Login />} />
-                </Route>
-              </Routes>
+                  index
+                  element={<NavigateToResource resource="blog_posts" />}
+                />
+                <Route path="/products" element={<ProductList />} />
+                <Route path="/categories" element={<CategoryList />} />
+                <Route path="*" element={<ErrorComponent />} />
+              </Route>
+              <Route
+                element={
+                  <Authenticated
+                    key="authenticated-outer"
+                    fallback={<Outlet />}
+                  >
+                    <NavigateToResource />
+                  </Authenticated>
+                }
+              >
+                <Route path="/login" element={<Login />} />
+              </Route>
+            </Routes>
 
-              <RefineKbar />
-              <UnsavedChangesNotifier />
-              <DocumentTitleHandler />
-            </Refine>
-            <DevtoolsPanel />
-          </DevtoolsProvider>
+            <RefineKbar />
+            <UnsavedChangesNotifier />
+            <DocumentTitleHandler />
+          </Refine>
         </ColorModeContextProvider>
       </RefineKbarProvider>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App
