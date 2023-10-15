@@ -9,17 +9,20 @@ datasource db {
 
 model Product {
   id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId   Float   @unique
   name        String
   description String
   isActive    Boolean @default(true)
   price       Float
+  category    Float?
 
-  images     Image[]
-  Category   Category @relation(fields: [categoryId], references: [id])
-  categoryId String   @map("categoryId") @db.ObjectId
+  categories   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?   @db.ObjectId
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  images Image[]
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
   @@index([name], name: "name")
 }
@@ -27,17 +30,18 @@ model Product {
 model Image {
   id        String  @id @default(auto()) @map("_id") @db.ObjectId
   response  String
-  Product   Product @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
   productId String  @map("productId") @db.ObjectId
 }
 
 model Category {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  title    String
-  isActive Boolean @default(true)
-  cover    String?
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  title      String
+  isActive   Boolean @default(true)
+  categoryId Float?  @unique
+  cover      String?
 
-  Products Product[]
+  products Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

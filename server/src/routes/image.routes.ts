@@ -12,7 +12,9 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
+    // @ts-ignore
     folder: 'restaurantDashboard-Images',
+    unique_filename: true,
     allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
   },
 })
@@ -21,6 +23,7 @@ const upload = multer({ storage: storage })
 
 const router = express.Router()
 router.route('/').post(upload.single('file'), (req, res) => {
+  // @ts-ignore
   const fileURL = req.file.path
   res.json(fileURL)
 })

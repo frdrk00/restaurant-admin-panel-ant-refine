@@ -39,6 +39,7 @@ export const CreateProduct: React.FC<CreateProductProps> = ({
     resource: 'categories',
   })
 
+
   return (
     <Drawer
       {...drawerProps}
@@ -54,7 +55,8 @@ export const CreateProduct: React.FC<CreateProductProps> = ({
             boxShadow: 'none',
           },
           bodyStyle: {
-            padding: 0,
+            padding: 10,
+            margin: 6,
           },
         }}
       >
@@ -141,7 +143,7 @@ export const CreateProduct: React.FC<CreateProductProps> = ({
             ]}
           >
             <InputNumber
-              formatter={(value) => `$ ${value}`}
+              formatter={(value) => `${value} €`}
               style={{ width: '150px' }}
             />
           </Form.Item>

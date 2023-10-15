@@ -1,12 +1,11 @@
 import { BaseKey } from '@refinedev/core'
-import { NumberField } from '@refinedev/antd'
+import { ImageField, NumberField } from '@refinedev/antd'
 import {
   CloseCircleOutlined,
   FormOutlined,
   MoreOutlined,
 } from '@ant-design/icons'
 import {
-  Avatar,
   Card,
   Divider,
   InputNumber,
@@ -97,7 +96,15 @@ export const ProductItem: React.FC<ProductItemProps> = ({
         }}
       >
         <div style={{ textAlign: 'center' }}>
-          <Avatar size={128} src={item.images[0].response} alt={item.name} />
+          <ImageField
+            value={item.images[0]?.response}
+            title={item.images[0]?.name}
+            width="100%"
+            style={{
+              padding: 2,
+              borderRadius: 8,
+            }}
+          />
         </div>
         <Divider />
         <Paragraph
@@ -124,7 +131,7 @@ export const ProductItem: React.FC<ProductItemProps> = ({
             color: '#999999',
           }}
         >
-          #{item?._id.slice(-5).toUpperCase()}
+          #{item?.productId}
         </Text>
         <NumberField
           style={{
@@ -133,10 +140,10 @@ export const ProductItem: React.FC<ProductItemProps> = ({
             marginBottom: '8px',
           }}
           options={{
-            currency: 'USD',
+            currency: 'EUR',
             style: 'currency',
           }}
-          value={item.price / 100}
+          value={item.price}
         />
         {updateStock && (
           <div id="stock-number">

@@ -21,6 +21,7 @@ export const ProductCategoryFilter: React.FC<ProductItemProps> = ({
     if (filterCategories.length > 0) {
       onChange?.(filterCategories)
     }
+    // eslint-disable-next-line
   }, [filterCategories])
 
   const { data: categoryData, isLoading: categoryIsLoading } =
@@ -69,14 +70,14 @@ export const ProductCategoryFilter: React.FC<ProductItemProps> = ({
       </Button>
       {categoryData?.data.map((category) => (
         <Button
-          key={category._id}
+          key={category.id}
           shape="round"
           type={
-            filterCategories.includes(category._id.toString())
+            filterCategories.includes(category.id.toString())
               ? 'primary'
               : 'default'
           }
-          onClick={() => toggleFilterCategory(category._id.toString())}
+          onClick={() => toggleFilterCategory(category.id.toString())}
         >
           {category.title}
         </Button>

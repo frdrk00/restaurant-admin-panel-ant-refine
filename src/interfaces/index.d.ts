@@ -105,22 +105,22 @@ export interface IOrder {
 
 export interface IProduct {
     id: number
-    _id: string;
+    productId: number;
     name: string;
     isActive: boolean;
     description: string;
     images: IFile[];
-    createdAt: string;
     price: number;
     category: ICategory;
     stock: number;
+    createdAt: string;
 }
 
 export interface ICategory {
     id: number;
     title: string;
     isActive: boolean;
-    _id: string;
+    categoryId: number;
 }
 
 export interface IOrderFilterVariables {
