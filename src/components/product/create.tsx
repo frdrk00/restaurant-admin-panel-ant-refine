@@ -37,6 +37,8 @@ export const CreateProduct: React.FC<CreateProductProps> = ({
 
   const { selectProps: categorySelectProps } = useSelect<ICategory>({
     resource: 'categories',
+    optionLabel: 'title',
+    optionValue: 'categoryId',
   })
 
 

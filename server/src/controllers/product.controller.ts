@@ -2,7 +2,7 @@ import { db } from '../lib/db'
 import { Request, Response } from 'express'
 
 export const createProduct = async (req: Request, res: Response) => {
-  const { name, description, isActive, price, category, images, categoryId } =
+  const { name, description, isActive, price, category, images } =
     req.body
 
   if (
@@ -27,7 +27,12 @@ export const createProduct = async (req: Request, res: Response) => {
         description,
         isActive,
         price,
-        categoryId: category.id,
+        category: category.id,
+        categories: {
+          connect: {
+            categoryId: category.id,
+          },
+        },
         images: {
           create: {
             response: images[0].response,

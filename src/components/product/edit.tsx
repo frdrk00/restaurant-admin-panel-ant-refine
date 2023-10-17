@@ -39,6 +39,8 @@ export const EditProduct: React.FC<EditProductProps> = ({
 
   const { selectProps: categorySelectProps } = useSelect<ICategory>({
     resource: 'categories',
+    optionLabel: 'title',
+    optionValue: 'categoryId',
   })
 
   return (

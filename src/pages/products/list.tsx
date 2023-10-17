@@ -10,7 +10,6 @@ import { Row, List as AntdList, Col, Form, Input, Typography } from 'antd'
 
 import {
   ProductItem,
-  ProductCategoryFilter,
   CreateProduct,
   EditProduct,
 } from '../../components/product'
@@ -128,7 +127,7 @@ export const ProductList: React.FC<IResourceComponentsProps> = () => {
               )}
             />
           </Col>
-          <Col xs={0} sm={6}>
+          {/* <Col xs={0} sm={6}>
             <div
               style={{
                 display: 'flex',
@@ -144,7 +143,7 @@ export const ProductList: React.FC<IResourceComponentsProps> = () => {
             <Form.Item name="categories">
               <ProductCategoryFilter />
             </Form.Item>
-          </Col>
+          </Col> */}
         </Row>
       </Form>
       <CreateProduct

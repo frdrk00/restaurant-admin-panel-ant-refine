@@ -16,13 +16,13 @@ model Product {
   price       Float
   category    Float?
 
-  categories   Category? @relation(fields: [categoryId], references: [id])
+  categories Category? @relation(fields: [categoryId], references: [id])
   categoryId String?   @db.ObjectId
 
   images Image[]
 
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([name], name: "name")
 }

@@ -70,14 +70,14 @@ export const ProductCategoryFilter: React.FC<ProductItemProps> = ({
       </Button>
       {categoryData?.data.map((category) => (
         <Button
-          key={category.id}
+          key={category.categoryId}
           shape="round"
           type={
-            filterCategories.includes(category.id.toString())
+            filterCategories.includes(category.categoryId.toString())
               ? 'primary'
               : 'default'
           }
-          onClick={() => toggleFilterCategory(category.id.toString())}
+          onClick={() => toggleFilterCategory(category.categoryId.toString())}
         >
           {category.title}
         </Button>
